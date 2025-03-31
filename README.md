@@ -7,6 +7,68 @@
 
 [toc]
 
+## 零、下载实验工程
+
+我们使用UV来方便大家统一版本。如果你使用了我们的镜像，或者使用的是archlinux：
+
+1. **下载UV Python包管理器**
+
+    ```bash
+    # （可选）更新软件列表
+    sudo pacman -Syy
+
+    # 安装实验所使用的Python包管理器
+    sudo pacman -S uv
+    ```
+
+    Fedora / RHEL
+
+    ```bash
+    sudo dnf install uv
+    ```
+
+    其他发行版
+
+    ```bash
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
+2. **获取实验Git仓库**
+
+    ```bash
+    git clone https://github.com/XJTU-NetVerify/sdn-lab2.git
+    cd sdn-lab2
+    ```
+
+3. **安装依赖和初始化**
+
+    ```bash
+    uv sync
+    ```
+
+4. **运行OS-Ken App**
+
+    ```bash
+    uv run osken-manager simple_switch.py
+    ```
+
+    如果你不希望再反复输入`uv run`，你可以使用Python虚拟环境（virtualenv, `venv`）；此后你就可以直接运行：
+
+    ```bash
+    # 创建虚拟环境：
+    uv venv
+    uv sync
+
+    # 创建完虚拟环境后，每次进入新的shell你需要运行：
+    source .venv/bin/activate
+
+    # 此时和Conda一样，Shell prompt前面会有`(sdn-lab2)`提示，即说明你在`venv`虚拟环境中。
+    # 你可以直接运行osken-manager。
+    osken-manager simple_switch.py
+
+    # 如果要退出`venv`虚拟环境：
+    deactivate
+    ```
+
 ## 一、OVS查看交换机流表
 
 - 查看交换机`s1`的流表
@@ -42,13 +104,13 @@ Ryu现已不再维护；因此，我们在实验中选用从Ryu fork的，目前
 
 ```shell
 sudo mn --custom topo_2sw_2host.py --topo mytopo --controller remote
-#remote表示不用`Mininet`自带的控制器，尝试使用`Ryu`等远端控制器。
+#remote表示不用`Mininet`自带的控制器，尝试使用`OS-Ken`等远端控制器。
 ```
 
 - 运行OS-Ken App。
 
 ```shell
-ryu-manager --observe-links simple_switch.py
+uv run osken-manager simple_switch.py
 ```
 
 ## 四、OS-Ken编程示例：简单交换机
@@ -114,7 +176,7 @@ sudo mn --controller remote --mac --topo=tree,2,2
 - 将上述代码保存为`simple_switch.py`，启动控制器
 
 ```
-sudo osken-manager simple_switch.py
+uv run osken-manager simple_switch.py
 ```
 
 - 在`mininet`的`CLI`中启动`wireshark`抓取端口`h4-eth0`
@@ -152,7 +214,7 @@ mininet> h4 wireshark &
 - 网络拓扑为`topo_1969_1.py`，启动方式：
 
   ```shell
-  sudo python topo_1969_1.py
+  sudo ./topo_1969_1.py
   ```
 
 - 可以不考虑交换机对数据包的缓存(`no_buffer`)。

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from mininet.topo import Topo
 
 class MyTopo( Topo ):
